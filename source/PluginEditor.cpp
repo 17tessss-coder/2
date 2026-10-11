@@ -208,7 +208,7 @@ void VocalSauceEditor::paint(juce::Graphics&g){
     g.fillAll(dirt);
     // Pixel-dirt texture - drawn as original geometry, no Mojang assets included.
     juce::Random rng(1717);
-    const auto grains[]={juce::Colour::fromRGB(51,41,32),juce::Colour::fromRGB(33,27,22),
+    const juce::Colour grains[]={juce::Colour::fromRGB(51,41,32),juce::Colour::fromRGB(33,27,22),
                          juce::Colour::fromRGB(58,44,32)};
     for(int i=0;i<2500;++i){g.setColour(grains[i%3]);
         g.fillRect(rng.nextInt(width/5)*5,rng.nextInt(height/5)*5,5,5);}

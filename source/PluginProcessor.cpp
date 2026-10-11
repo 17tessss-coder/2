@@ -1,3 +1,8 @@
+// Prevent Windows SDK min/max macros from breaking std::min in MSVC.
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <algorithm>
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter();
@@ -56,11 +61,11 @@ bool VocalSauceProcessor::isBusesLayoutSupported(const BusesLayout& layout) cons
 }
 void VocalSauceProcessor::processBlock(juce::AudioBuffer<float>& audio,juce::MidiBuffer&) {
     juce::ScopedNoDenormals noDenormals;
-    const int count=std::min(2,audio.getNumChannels());
+    const int count=(std::min)(2,audio.getNumChannels());
     if(count<=0 || audio.getNumSamples()==0)return;
     std::array<float,SauceDSP::numParams> values{};
     for(size_t i=0;i<values.size();++i)values[i]=rawParameters[i]->load();
-    auto** channels=audio.getArrayOfWritePointers();
+    auto* const* channels=audio.getArrayOfWritePointers();
     engine.process(channels,count,audio.getNumSamples(),values);
     for(int i=count;i<audio.getNumChannels();++i)audio.clear(i,0,audio.getNumSamples());
 }
@@ -78,7 +83,6 @@ void VocalSauceProcessor::setStateInformation(const void* data,int size){
 juce::File VocalSauceProcessor::getPresetDirectory() const {
     auto fallback=juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
         .getChildFile("17TESS").getChildFile("VocalSauce").getChildFile("Presets");
-juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 #if JUCE_WINDOWS
     HMODULE h=nullptr;
     if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
